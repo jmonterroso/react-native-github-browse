@@ -12,8 +12,6 @@ import {
     ActivityIndicator
 } from 'react-native';
 
-
-import buffer from 'buffer';
 class Login extends Component {
     constructor(props) {
         super(props);
@@ -63,16 +61,21 @@ class Login extends Component {
     }
 
     onLoginPressed() {
-        console.log(this.state.username, 'this.state.username '); //deleteinbuild
-        console.log(this.state.password, 'this.state.password'); //deleteinbuild
         this.setState({showProgress: true});
-
         var authService = require('./AuthService');
         authService.login({
             username: this.state.username,
             password: this.state.password
         }, (results)=> {
-            this.setState(Object.assign({showProgress: false}, results));
+            console.log(results, 'results '); //deleteinbuild
+            this.setState(Object.assign({
+                showProgress: false
+            }, results));
+
+            if(results.success && this.props.onLogin){
+                console.log('onlogin'); //deleteinbuild
+                this.props.onLogin();
+            }
         });
 
     }

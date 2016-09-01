@@ -4,40 +4,88 @@
  * @flow
  */
 
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 var Login = require('./login');
 
 import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  View
+    AppRegistry,
+    StyleSheet,
+    Text,
+    View,
+    ActivityIndicator
 } from 'react-native';
 
+var AuthService = require('./AuthService');
+
 class GithubBrowse extends Component {
-  render() {
-    var message = 'foo';
-    return (
-        <Login/>
-    );
-  }
+    componentDidMount() {
+        console.log('component did mount'); //deleteinbuild
+        AuthService.getAuthInfo((err, authInfo) => {
+            console.log(authInfo, 'authInfo '); //deleteinbuild
+            this.setState({
+                checkingAuth: false,
+                isLoggedIn: authInfo != null
+
+            })
+        });
+    }
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            isLoggedIn: false,
+            checkingAuth: true
+        }
+    }
+
+    render() {
+        if (this.state.checkingAuth) {
+            return (
+
+                <View style={styles.container}>
+                    <ActivityIndicator animating={true} size="large" style={styles.loader}></ActivityIndicator>
+                </View>
+            );
+        }
+
+        if (this.state.isLoggedIn) {
+            return (
+                <View style={styles.container}>
+                    <Text style={styles.welcome}>Logged In</Text>
+                </View>
+            );
+        } else {
+            return (
+                <Login onLogin={this.onLogin.bind(this)}/>
+            );
+
+
+        }
+
+    }
+
+    onLogin() {
+        this.setState({isLoggedIn: true});
+    }
+
+
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+    container: {
+        flex: 1,
+        backgroundColor: '#F5FCFF',
+    },
+    welcome: {
+        fontSize: 20,
+        textAlign: 'center',
+        margin: 10,
+    },
+    instructions: {
+        textAlign: 'center',
+        color: '#333333',
+        marginBottom: 5,
+    },
 });
 
 AppRegistry.registerComponent('GithubBrowse', () => GithubBrowse);
