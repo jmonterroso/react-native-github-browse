@@ -5,21 +5,22 @@
  */
 
 import React, {Component} from 'react';
-var Login = require('./login');
-
 import {
-    AppRegistry,
-    StyleSheet,
-    Text,
-    View,
-    ActivityIndicator
+AppRegistry,
+StyleSheet,
+Text,
+View,
+ActivityIndicator
 } from 'react-native';
 
+var Login = require('./login');
+var AppContainer = require('./AppContainer');
 var AuthService = require('./AuthService');
+
 
 class GithubBrowse extends Component {
     componentDidMount() {
-        console.log('component did mount'); //deleteinbuild
+
         AuthService.getAuthInfo((err, authInfo) => {
             console.log(authInfo, 'authInfo '); //deleteinbuild
             this.setState({
@@ -43,16 +44,14 @@ class GithubBrowse extends Component {
             return (
 
                 <View style={styles.container}>
-                    <ActivityIndicator animating={true} size="large" style={styles.loader}></ActivityIndicator>
+                    <ActivityIndicator animating={true} size="large" style={styles.loader}/>
                 </View>
             );
         }
 
         if (this.state.isLoggedIn) {
             return (
-                <View style={styles.container}>
-                    <Text style={styles.welcome}>Logged In</Text>
-                </View>
+                <AppContainer/>
             );
         } else {
             return (
